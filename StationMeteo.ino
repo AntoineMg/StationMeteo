@@ -2,6 +2,7 @@
 
 //Variables globales :
 float g_float_temp=0;
+float g_float_luminosite=0;
 
 
 void setup() {
@@ -11,5 +12,10 @@ void setup() {
 
 void loop() {
   recupTemperature();
+  Serial.print("Température : ");
   Serial.println(g_float_temp);
+  delay(1000);
+  Serial.print("Luminosité : ");
+  Serial.println(g_float_luminosite);
+  delay(1000);
 }
