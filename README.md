@@ -5,8 +5,8 @@ Projet de Station météo basée sur un arduino uno
 ### Version 1
 * Thermomètre
     * LM35DZ
-        - [ ] Retourne une température
-        - [ ] Précision au dixième de degré
+        - [x] Retourne une température
+        - [x] Précision au dixième de degré
   
 * Capteur d'intensité lumineuse
     * Cellule photovoltaïque random
