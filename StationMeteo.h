@@ -5,7 +5,7 @@
 
 //Definition des Masques
 #define MSQ_ADC 0x40 //Masque pour accéder au bit de start conversion de l'ADC
-#define MSQ_PORT0 0x01 //Masque pour accéder au Port 0
+#define MSQ_PORT0 0x00 //Masque pour accéder au Port 0
 
 void InitCan(uint8_t x_ui8_portConv);
 void recupTemperature(void);
