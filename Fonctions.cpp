@@ -1,7 +1,7 @@
 #pragma once
 #include "StationMeteo.h"
 extern float g_float_temp;
-
+extern float g_float_luminosite;
 
 
 //Initialisation du CAN sur le port ... (doit être situé sur le port C)
@@ -29,8 +29,19 @@ uint16_t ConvAn(void) {
 void recupTemperature(void){
   uint16_t l_ui16_resultatConv;
   //initialisation du CAN sur le port A0
-  InitCan(MSQ_PORT0);
+  InitCan(PIN_TEMPERATURE);
   l_ui16_resultatConv = ConvAn();
   //Conversion du résultat CAN en température
   g_float_temp = l_ui16_resultatConv*0.488;
+}
+
+//Récupération de la luminosité et stockage de celle-ci dans la variable globale g_float_lumi
+void recupLuminosite(void){
+  uint16_t l_ui16_resultatConv;
+  //initialisation du CAN sur le port A1
+  InitCan(PIN_LUMINOSITE);
+  l_ui16_resultatConv = ConvAn();
+  //Conversion du résultat du CAN en lux
+  g_float_luminosite = l_ui16_resultatConv*0.0488;
+
 }
