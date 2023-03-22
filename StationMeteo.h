@@ -1,7 +1,7 @@
 #include <arduino.h>
 
 //Definition des PINS
-#define PIN_TEMPERATURE 0x01 //A0 = PC0
+#define PIN_TEMPERATURE 0x00 //A0 = PC0
 
 //Definition des Masques
 #define MSQ_ADC 0x40 //Masque pour accéder au bit de start conversion de l'ADC

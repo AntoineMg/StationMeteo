@@ -32,5 +32,5 @@ void recupTemperature(void){
   InitCan(MSQ_PORT0);
   l_ui16_resultatConv = ConvAn();
   //Conversion du résultat CAN en température
-  g_float_temp = (l_ui16_resultatConv*(5/1024))*100;
+  g_float_temp = l_ui16_resultatConv*0.488;
 }
