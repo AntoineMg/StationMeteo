@@ -15,7 +15,11 @@ void loop() {
   Serial.print("Température : ");
   Serial.println(g_float_temp);
   delay(1000);
+
+  recupLuminosite();
   Serial.print("Luminosité : ");
   Serial.println(g_float_luminosite);
   delay(1000);
+
+  recupIntensiteLumineuse();
 }

@@ -42,6 +42,14 @@ void recupLuminosite(void){
   InitCan(PIN_LUMINOSITE);
   l_ui16_resultatConv = ConvAn();
   //Conversion du résultat du CAN en lux
-  g_float_luminosite = l_ui16_resultatConv*0.0488;
+  g_float_luminosite = 1/(l_ui16_resultatConv*0.00488);
+}
 
+void recupIntensiteLumineuse(void){
+  uint16_t l_ui16_resultatConv;
+  //initialisation du CAN sur le port A1
+  InitCan(PIN_INTENSITE_LUMINEUSE);
+  l_ui16_resultatConv = ConvAn();
+  //Conversion du résultat du CAN en lux
+  Serial.println(l_ui16_resultatConv*0.00488);
 }
