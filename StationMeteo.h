@@ -14,3 +14,4 @@ uint16_t ConvAn(void);
 void recupTemperature(void);
 void recupLuminosite(void);
 void recupIntensiteLumineuse(void);
+void recupVitesseVent(void);

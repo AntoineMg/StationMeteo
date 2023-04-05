@@ -2,6 +2,7 @@
 #include "StationMeteo.h"
 extern float g_float_temp;
 extern float g_float_luminosite;
+extern uint16_t g_ui16_time_start;
 
 
 //Initialisation du CAN sur le port ... (doit être situé sur le port C)
@@ -52,4 +53,23 @@ void recupIntensiteLumineuse(void){
   l_ui16_resultatConv = ConvAn();
   //Conversion du résultat du CAN en lux
   Serial.println(l_ui16_resultatConv*0.00488);
+}
+
+void recupVitesseVent(void){
+  uint16_t l_ui16_risingEdgeCounter = 0; //Init Variable compteur de fronts montants
+  uint16_t l_ui16_temps = millis(); //heure
+
+  if(g_ui16_time_start+1000 <= l_ui16_temps) {
+    //phase acquisition
+    //l_ui16_temps = millis() - g_ui16_time_start;
+    l_ui16_risingEdgeCounter = TCNT1;
+
+    //renvoi des datas ( ICI CONVERTIR ENSUITE EN MPH )
+    Serial.println(l_ui16_risingEdgeCounter);
+
+    //phase reset
+    TCNT1=0;
+    g_ui16_time_start = l_ui16_temps; //le temps de depart est desormais le temps auquel cette mesure a ete effectuee
+
+  }
 }
