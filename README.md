@@ -39,4 +39,14 @@ Projet de Station météo basée sur un arduino uno
     
 ### void recupTemperature(void)
     Permets de récupérer la température en lançant une Conversion AN sur la pin définie comme étant le pin du thermomètre (ici A0)
+
+### void recupLuminosite(void)
+    Permets de récupérer la luminosité en lançant une Conversion A-N sur la pin définie comme étant la pin de la photorésistance (ici A1)
+
+### void recupIntensiteLumineuse(void)
+    Permets de récupérer l'intensité lumineuse en lançant une Conversion A-N sur la pin définie comme étant la pin de la cellule photovoltaïque (ici A2)
+
+### void recupVitesseVent(void)
+    Permets de récupérer la vitesse du vent, en mesurant la fréquence sur le pin ...???? puis en convertissant cette fréquence en vitesse de vent à l'aide d'une formule [à déterminer]
+    
     
