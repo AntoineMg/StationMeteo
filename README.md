@@ -10,23 +10,24 @@ Projet de Station météo basée sur un arduino uno
   
 * Capteur d'intensité lumineuse
     * Cellule photovoltaïque random
-        - [ ] Retourne une valeur
+        - [X] Retourne une valeur
         - [ ] Valeur cohérente
   
 * Capteur de luminosité
     * Photorésistance
-        - [ ] Retourne une valeur
+        - [X] Retourne une valeur
         - [ ] Valeur cohérente
 
 * Anémomètre
     * Simulé par un GBF
-        - [ ] Retourne une valeur
-        - [ ] Valeur cohérente avec celle simulée par le GBF
+        - [X] Retourne une valeur
+        - [X] Valeur cohérente avec celle simulée par le GBF
   
  
 ## Tâches à effectuer :
 
-- [ ] //inserer tache
+- [ ] trouver la bonne formule pour convertir la luminosité
+- [ ] Rendre toutes les fonctions non bloquantes
 
 ## Fonctions :
 
