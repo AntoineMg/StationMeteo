@@ -7,33 +7,33 @@ Projet de Station météo basée sur un arduino uno
     * LM35DZ
         - [x] Retourne une température
         - [x] Précision au dixième de degré
-        – [x] Calcul de la moyenne des 5 dernières mesures (a tester)
-        – [x] Calcul de la tendance (a tester)
+        - [x] Calcul de la moyenne des 5 dernières mesures (a tester)
+        - [x] Calcul de la tendance (a tester)
   
 * Capteur d'intensité lumineuse
     * Cellule photovoltaïque random
         - [X] Retourne une valeur
         - [ ] Valeur cohérente
-        – [ ] Calcul de la moyenne des 5 dernières mesures
-        – [ ] Calcul de la tendance
+        - [ ] Calcul de la moyenne des 5 dernières mesures
+        - [ ] Calcul de la tendance
   
 * Capteur de luminosité
     * Photorésistance
         - [X] Retourne une valeur
         - [ ] Valeur cohérente
-        – [ ] Calcul de la moyenne des 5 dernières mesures
-        – [ ] Calcul de la tendance
+        - [ ] Calcul de la moyenne des 5 dernières mesures
+        - [ ] Calcul de la tendance
 
 * Anémomètre
     * Simulé par un GBF
         - [X] Retourne une valeur
         - [X] Valeur cohérente avec celle simulée par le GBF
-        – [ ] Calcul de la moyenne des 5 dernières mesures
-        – [ ] Calcul de la tendance
+        - [ ] Calcul de la moyenne des 5 dernières mesures
+        - [ ] Calcul de la tendance
 
 * Général
-    – [ ] Affichage des infos avec la moyenne et la tendance
-    – [ ] Mesures toutes les 3 secondes
+    - [ ] Affichage des infos avec la moyenne et la tendance
+    - [ ] Mesures toutes les 3 secondes
  
 ## Tâches à effectuer :
 
