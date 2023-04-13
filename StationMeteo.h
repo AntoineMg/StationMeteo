@@ -8,6 +8,10 @@
 //Definition des Masques
 #define MSQ_ADC 0x40 //Masque pour accéder au bit de start conversion de l'ADC
 
+
+typedef enum{STABLE, HAUSSE, BAISSE} T_Tendance;
+
+
 void InitCan(uint8_t x_ui8_portConv);
 uint16_t ConvAn(void);
 

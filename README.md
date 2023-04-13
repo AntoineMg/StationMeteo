@@ -7,27 +7,39 @@ Projet de Station météo basée sur un arduino uno
     * LM35DZ
         - [x] Retourne une température
         - [x] Précision au dixième de degré
+        – [x] Calcul de la moyenne des 5 dernières mesures (a tester)
+        – [x] Calcul de la tendance (a tester)
   
 * Capteur d'intensité lumineuse
     * Cellule photovoltaïque random
         - [X] Retourne une valeur
         - [ ] Valeur cohérente
+        – [ ] Calcul de la moyenne des 5 dernières mesures
+        – [ ] Calcul de la tendance
   
 * Capteur de luminosité
     * Photorésistance
         - [X] Retourne une valeur
         - [ ] Valeur cohérente
+        – [ ] Calcul de la moyenne des 5 dernières mesures
+        – [ ] Calcul de la tendance
 
 * Anémomètre
     * Simulé par un GBF
         - [X] Retourne une valeur
         - [X] Valeur cohérente avec celle simulée par le GBF
-  
+        – [ ] Calcul de la moyenne des 5 dernières mesures
+        – [ ] Calcul de la tendance
+
+* Général
+    – [ ] Affichage des infos avec la moyenne et la tendance
+    – [ ] Mesures toutes les 3 secondes
  
 ## Tâches à effectuer :
 
 - [ ] trouver la bonne formule pour convertir la luminosité
 - [ ] Rendre toutes les fonctions non bloquantes
+- [ ] Integrer moyennes et tendances, sur les 3autres fx
 
 ## Fonctions :
 
@@ -39,6 +51,9 @@ Projet de Station météo basée sur un arduino uno
     
 ### void recupTemperature(void)
     Permets de récupérer la température en lançant une Conversion AN sur la pin définie comme étant le pin du thermomètre (ici A0)
+    Stockage de la température actuelle dans la variable globale g_float_temp
+    Calcul de la moyenne des 5 dernières mesures et stockage de celle-ci dands le tableau g_float_tab_tempmoy[0]
+    Calcul de la tendance, en comparant les 2 dernières moyennes, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_temp
 
 ### void recupLuminosite(void)
     Permets de récupérer la luminosité en lançant une Conversion A-N sur la pin définie comme étant la pin de la photorésistance (ici A1)

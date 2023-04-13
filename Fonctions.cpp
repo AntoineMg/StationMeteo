@@ -1,9 +1,23 @@
 #pragma once
 #include "StationMeteo.h"
-extern float g_float_temp;
-extern float g_float_luminosite;
-extern float g_float_intensitelum;
-extern uint16_t g_ui16_time_start;
+
+//Variables globales :
+extern uint16_t g_ui16_time_start=0;   //Heure de départ du programme
+
+// Variables – Température
+extern float g_float_temp=0;   //Température actuelle
+extern float g_float_tab_temp[];   //5 dernières températures
+extern float g_float_tab_tempmoy[];    //2 dernières moyennes de 5 températures cf. Annexe 1  
+extern T_Tendance g_tendance_temp;   //tendance de la température (Stable / Hausse / Baisse)
+
+// Variables – Luminosité
+extern float g_float_luminosite=0;   //Luminosité actuelle
+
+// Variables – Intensité lumineuse
+extern float g_float_intensitelum=0;    //Intensité lumineuse actuelle
+
+// Variables – Vent
+
 
 //Initialisation du CAN sur le portC X (doit être situé sur le port C)
 void InitCan(uint8_t x_ui8_portConv){
@@ -27,8 +41,12 @@ uint16_t ConvAn(void) {
 }
 
 //Recupération de la température et stockage de celle ci dans la variable globale g_float_temp
+//Calcul de la moyenne des 5 dernières mesures et stockage de celle-ci dands le tableau g_float_tab_tempmoy[0]
+//Calcul de la tendance, en comparant les 2 dernières moyennes, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_temp
 void recupTemperature(void){
   uint16_t l_ui16_resultatConv;
+  float l_float_sum = 0;
+  float l_float_ratio=1;
 
   //initialisation du CAN sur le port A0
   InitCan(PIN_TEMPERATURE);
@@ -38,6 +56,40 @@ void recupTemperature(void){
 
   //Conversion du résultat CAN en température
   g_float_temp = l_ui16_resultatConv*0.488;
+
+  //décalage des anciennes tmepérature
+  //transformer en boucle for
+  g_float_tab_temp[4]=g_float_tab_temp[3];
+  g_float_tab_temp[3]=g_float_tab_temp[2];
+  g_float_tab_temp[2]=g_float_tab_temp[1];
+  g_float_tab_temp[1]=g_float_tab_temp[0];
+  g_float_tab_temp[0]=g_float_temp;
+  
+  //additionne les 5 dernières températures
+  for(iBcl=0;iBcl<5;iBcl++){
+    l_float_sum += g_float_tab_temp[iBcl];
+  }
+
+  g_float_tab_tempmoy[1] = g_float_tab_tempmoy[0];   //décalge de la moyenne précédente
+  g_float_tab_tempmoy[0] = l_float_sum/5;   //stockage de la moyenne
+
+  l_float_ratio = g_float_tab_tempmoy[1]/g_float_tab_tempmoy[0];  //Calcul du rapport entre les 2 moyennes précédentes
+
+  //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
+  if (l_float_ratio>1.02){
+    //tendance à la baisse
+    g_tendance_temp=BAISSE;
+  }
+
+  else if (l_float_ration<0.98){
+    //tendance à la hausse
+    g_tendance_temp=HAUSSE;
+  }
+
+  else{
+    //tendance stable
+    g_tendance_temp=STABLE;
+  }
 }
 
 //Récupération de la luminosité et stockage de celle-ci dans la variable globale g_float_lumi
