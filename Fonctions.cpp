@@ -7,7 +7,7 @@ extern uint16_t g_ui16_time_start;   //Heure de départ du programme
 // Variables – Température
 extern float g_float_temp;   //Température actuelle
 extern float g_float_tab_temp[];   //5 dernières températures
-extern float g_float_tab_tempmoy[];    //2 dernières moyennes de 5 températures cf. Annexe 1  
+extern float g_float_tempmoy;    //moyenne de 5 températures 
 extern T_Tendance g_tendance_temp;   //tendance de la température (Stable / Hausse / Baisse)
 extern float g_float_temp_min;    //température minimale depuis le début
 extern float g_float_temp_max;    //température maximale depuis le début
@@ -15,7 +15,7 @@ extern float g_float_temp_max;    //température maximale depuis le début
 // Variables – Luminosité
 extern float g_float_luminosite;   //Luminosité actuelle
 extern float g_float_tab_luminosite[];    //5 dernières luminosités
-extern float g_float_tab_luminositemoy[];     //2 dernières moyennes de 5 luminosités cf. Annexe 1
+extern float g_float_luminositemoy;     //2 dernières moyennes de 5 luminosités cf. Annexe 1
 extern T_Tendance g_tendance_luminosite;    //tendance de la luminosité (Stable / Hausse / Baisse)
 
 // Variables – Intensité lumineuse
@@ -58,7 +58,7 @@ uint16_t ConvAn(void) {
 void recupTemperature(void){
   uint16_t l_ui16_resultatConv;
   float l_float_sum = 0;
-  float l_float_ratio=1;
+  float l_float_delta = 0;
 
   //initialisation du CAN sur le port A0
   InitCan(PIN_TEMPERATURE);
@@ -82,26 +82,29 @@ void recupTemperature(void){
     l_float_sum += g_float_tab_temp[iBcl];
   }
 
-  g_float_tab_tempmoy[1] = g_float_tab_tempmoy[0];   //décalge de la moyenne précédente
-  g_float_tab_tempmoy[0] = l_float_sum/5;   //stockage de la moyenne
+  g_float_tempmoy = l_float_sum/5;   //stockage de la moyenne
 
-  l_float_ratio = g_float_tab_tempmoy[1]/g_float_tab_tempmoy[0];  //Calcul du rapport entre les 2 moyennes précédentes
+  l_float_delta = g_float_tab_temp[0]-g_float_tab_temp[1];   //Calcul de la différence entre la température actuelle et la température précédente
 
-  //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
-  if (l_float_ratio>1.02){
+  //Si le delta est inférieur à -0.1, alors la tendance est à la baisse
+  if (l_float_delta<-0.1){
     //tendance à la baisse
     g_tendance_temp=BAISSE;
   }
 
-  else if (l_float_ratio<0.98){
+  //Si le delta est supérieur à 0.1, alors la tendance est à la hausse
+  else if (l_float_delta>0.1){
     //tendance à la hausse
     g_tendance_temp=HAUSSE;
   }
 
+  //Sinon la tendance est stable
   else{
     //tendance stable
     g_tendance_temp=STABLE;
   }
+
+
 
   //actualisation de la température minimale si elle est dépassée
   if (g_float_temp<g_float_temp_min){
@@ -121,7 +124,7 @@ void recupTemperature(void){
 void recupLuminosite(void){
   uint16_t l_ui16_resultatConv;
   float l_float_sum = 0;
-  float l_float_ratio=1;
+  float l_float_delta=1;
 
   //initialisation du CAN sur le port A1
   InitCan(PIN_LUMINOSITE);
@@ -144,18 +147,17 @@ void recupLuminosite(void){
     l_float_sum += g_float_tab_luminosite[iBcl];
   }
 
-  g_float_tab_luminositemoy[1] = g_float_tab_luminositemoy[0];   //décalge de la moyenne précédente
-  g_float_tab_luminositemoy[0] = l_float_sum/5;   //stockage de la moyenne
+  g_float_luminositemoy = l_float_sum/5;   //stockage de la moyenne
 
-  l_float_ratio = g_float_tab_luminositemoy[1]/g_float_tab_luminositemoy[0];  //Calcul du rapport entre les 2 moyennes précédentes
+  l_float_delta = g_float_tab_luminosite[0]-g_float_tab_luminosite[1];
 
   //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
-  if (l_float_ratio>1.02){
+  if (l_float_delta>0.1){
     //tendance à la baisse
     g_tendance_luminosite=BAISSE;
   }
 
-  else if (l_float_ratio<0.98){
+  else if (l_float_delta<-0.1){
     //tendance à la hausse
     g_tendance_luminosite=HAUSSE;
   }
@@ -200,12 +202,12 @@ void recupIntensiteLumineuse(void){
   l_float_ratio = g_float_tab_intensitelummoy[1]/g_float_tab_intensitelummoy[0];  //Calcul du rapport entre les 2 moyennes précédentes
 
   //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
-  if (l_float_ratio>1.02){
+  if (l_float_ratio>1.01){
     //tendance à la baisse
     g_tendance_intensitelum=BAISSE;
   }
 
-  else if (l_float_ratio<0.98){
+  else if (l_float_ratio<0.99){
     //tendance à la hausse
     g_tendance_intensitelum=HAUSSE;
   }

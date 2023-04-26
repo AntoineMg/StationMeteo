@@ -8,15 +8,15 @@ uint16_t g_ui16_time_start=0;   //Heure de départ du programme
 // Variables – Température
 float g_float_temp=0;   //Température actuelle
 float g_float_tab_temp[5];   //5 dernières températures
-float g_float_tab_tempmoy[2];    //2 dernières moyennes de 5 températures cf. Annexe 1  
-float g_float_temp_min=0;   //Température minimale depuis le début
+float g_float_tempmoy;    //moyenne de 5 températures
+float g_float_temp_min=60;   //Température minimale depuis le début
 float g_float_temp_max=0;   //Température maximale depuis le début
 T_Tendance g_tendance_temp;   //tendance de la température (Stable / Hausse / Baisse)
 
 // Variables – Luminosité
 float g_float_luminosite=0;   //Luminosité actuelle
 float g_float_tab_luminosite[5];  //5 dernières luminosités
-float g_float_tab_luminositemoy[2];   //2 dernières moyennes de 5 luminosités cf. Annexe 1
+float g_float_luminositemoy;   //2 dernières moyennes de 5 luminosités cf. Annexe 1
 T_Tendance g_tendance_luminosite;   //tendance de la luminosité (Stable / Hausse / Baisse)
 
 // Variables – Intensité lumineuse
@@ -45,9 +45,9 @@ void loop() {
   
   //recuperation des valeurs
   recupTemperature();
-  recupLuminosite();
-  recupIntensiteLumineuse();
-  recupVitesseVent();
+  //recupLuminosite();
+  //recupIntensiteLumineuse();
+  //recupVitesseVent();
 
 
   //Affichage des températures
@@ -59,13 +59,11 @@ void loop() {
   Serial.print("Max : ");
   Serial.println(g_float_temp_max);
   Serial.print("Moy : ");
-  Serial.println(g_float_tab_tempmoy[0]);
+  Serial.println(g_float_tempmoy);
   Serial.print("Tendance : ");
   Serial.println(g_tendance_temp);
+  Serial.println("================================================");
 
-  Serial.write(27);       // ESC command
-  Serial.print("[2J");    // clear screen command
-  Serial.write(27);
-  Serial.print("[H");     // cursor to home command
+  delay(3000);
 
 }
