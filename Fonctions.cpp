@@ -2,21 +2,33 @@
 #include "StationMeteo.h"
 
 //Variables globales :
-extern uint16_t g_ui16_time_start=0;   //Heure de départ du programme
+extern uint16_t g_ui16_time_start;   //Heure de départ du programme
 
 // Variables – Température
-extern float g_float_temp=0;   //Température actuelle
+extern float g_float_temp;   //Température actuelle
 extern float g_float_tab_temp[];   //5 dernières températures
 extern float g_float_tab_tempmoy[];    //2 dernières moyennes de 5 températures cf. Annexe 1  
 extern T_Tendance g_tendance_temp;   //tendance de la température (Stable / Hausse / Baisse)
+extern float g_float_temp_min;    //température minimale depuis le début
+extern float g_float_temp_max;    //température maximale depuis le début
 
 // Variables – Luminosité
-extern float g_float_luminosite=0;   //Luminosité actuelle
+extern float g_float_luminosite;   //Luminosité actuelle
+extern float g_float_tab_luminosite[];    //5 dernières luminosités
+extern float g_float_tab_luminositemoy[];     //2 dernières moyennes de 5 luminosités cf. Annexe 1
+extern T_Tendance g_tendance_luminosite;    //tendance de la luminosité (Stable / Hausse / Baisse)
 
 // Variables – Intensité lumineuse
-extern float g_float_intensitelum=0;    //Intensité lumineuse actuelle
+extern float g_float_intensitelum;    //Intensité lumineuse actuelle
+extern float g_float_tab_intensitelum[];   //5 dernières intensités lumineuse
+extern float g_float_tab_intensitelummoy[];    //2 dernières moyennes de 5 intensités lumineuses cf. Annexe 1
+extern T_Tendance g_tendance_intensitelum;    //tendance des intensités lumineuses (Stable / Hausse / Baisse)
 
 // Variables – Vent
+extern float g_float_vitesse_vent;    //Vitesse du vent actuelle
+extern float g_float_tab_vitesse_vent;   //5 dernières vitesses du vent
+extern float g_float_tab_vitesse_vent_moy;    //2 dernières moyennes de 5 vitesses du vent cf. Annexe 1
+extern T_Tendance g_tendance_vitesse_vent[];    //tendance des vitesses du vent (Stable / Hausse / Baisse)
 
 
 //Initialisation du CAN sur le portC X (doit être situé sur le port C)
@@ -66,7 +78,7 @@ void recupTemperature(void){
   g_float_tab_temp[0]=g_float_temp;
   
   //additionne les 5 dernières températures
-  for(iBcl=0;iBcl<5;iBcl++){
+  for(int iBcl=0;iBcl<5;iBcl++){
     l_float_sum += g_float_tab_temp[iBcl];
   }
 
@@ -81,7 +93,7 @@ void recupTemperature(void){
     g_tendance_temp=BAISSE;
   }
 
-  else if (l_float_ration<0.98){
+  else if (l_float_ratio<0.98){
     //tendance à la hausse
     g_tendance_temp=HAUSSE;
   }
@@ -90,11 +102,26 @@ void recupTemperature(void){
     //tendance stable
     g_tendance_temp=STABLE;
   }
+
+  //actualisation de la température minimale si elle est dépassée
+  if (g_float_temp<g_float_temp_min){
+    g_float_temp_min = g_float_temp;
+  }
+
+  //actualisation de la température maximale si elle est dépassée
+  if (g_float_temp>g_float_temp_max){
+    g_float_temp_max = g_float_temp;
+  }
+
 }
 
 //Récupération de la luminosité et stockage de celle-ci dans la variable globale g_float_lumi
+//Calcul de la moyenne des 5 dernières mesures et stockage de celle-ci dands le tableau g_float_tab_luminositemoy[0]
+//Calcul de la tendance, en comparant les 2 dernières moyennes, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_luminosite
 void recupLuminosite(void){
   uint16_t l_ui16_resultatConv;
+  float l_float_sum = 0;
+  float l_float_ratio=1;
 
   //initialisation du CAN sur le port A1
   InitCan(PIN_LUMINOSITE);
@@ -104,11 +131,47 @@ void recupLuminosite(void){
 
   //Conversion du résultat du CAN en lux
   g_float_luminosite = 1/(l_ui16_resultatConv*0.00488);
+
+  //décalage des anciennes luminosités
+  g_float_tab_luminosite[4]=g_float_tab_luminosite[3];
+  g_float_tab_luminosite[3]=g_float_tab_luminosite[2];
+  g_float_tab_luminosite[2]=g_float_tab_luminosite[1];
+  g_float_tab_luminosite[1]=g_float_tab_luminosite[0];
+  g_float_tab_luminosite[0]=g_float_luminosite;
+
+  //additionne les 5 dernières luminosités
+  for(int iBcl=0;iBcl<5;iBcl++){
+    l_float_sum += g_float_tab_luminosite[iBcl];
+  }
+
+  g_float_tab_luminositemoy[1] = g_float_tab_luminositemoy[0];   //décalge de la moyenne précédente
+  g_float_tab_luminositemoy[0] = l_float_sum/5;   //stockage de la moyenne
+
+  l_float_ratio = g_float_tab_luminositemoy[1]/g_float_tab_luminositemoy[0];  //Calcul du rapport entre les 2 moyennes précédentes
+
+  //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
+  if (l_float_ratio>1.02){
+    //tendance à la baisse
+    g_tendance_luminosite=BAISSE;
+  }
+
+  else if (l_float_ratio<0.98){
+    //tendance à la hausse
+    g_tendance_luminosite=HAUSSE;
+  }
+
+  else{
+    //tendance stable
+    g_tendance_luminosite=STABLE;
+  }
+
 }
 
 //Récupération de l'intensité lumineuse et stockage de celle-ci dans la variable globale g_float_intensitelum
 void recupIntensiteLumineuse(void){
   uint16_t l_ui16_resultatConv;
+  float l_float_sum = 0;
+  float l_float_ratio=1;
 
   //initialisation du CAN sur le port A1
   InitCan(PIN_INTENSITE_LUMINEUSE);
@@ -118,6 +181,39 @@ void recupIntensiteLumineuse(void){
 
   //Conversion du résultat du CAN en lux
   g_float_intensitelum = (l_ui16_resultatConv*0.00488);
+
+  //décalage des anciennes intensités lumineuses
+  g_float_tab_intensitelum[4]=g_float_tab_intensitelum[3];
+  g_float_tab_intensitelum[3]=g_float_tab_intensitelum[2];
+  g_float_tab_intensitelum[2]=g_float_tab_intensitelum[1];
+  g_float_tab_intensitelum[1]=g_float_tab_intensitelum[0];
+  g_float_tab_intensitelum[0]=g_float_intensitelum;
+
+  //additionne les 5 dernières intensités lumineuses
+  for(int iBcl=0;iBcl<5;iBcl++){
+    l_float_sum += g_float_tab_intensitelum[iBcl];
+  }
+
+  g_float_tab_intensitelummoy[1] = g_float_tab_intensitelummoy[0];   //décalge de la moyenne précédente
+  g_float_tab_intensitelummoy[0] = l_float_sum/5;   //stockage de la moyenne
+
+  l_float_ratio = g_float_tab_intensitelummoy[1]/g_float_tab_intensitelummoy[0];  //Calcul du rapport entre les 2 moyennes précédentes
+
+  //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
+  if (l_float_ratio>1.02){
+    //tendance à la baisse
+    g_tendance_intensitelum=BAISSE;
+  }
+
+  else if (l_float_ratio<0.98){
+    //tendance à la hausse
+    g_tendance_intensitelum=HAUSSE;
+  }
+
+  else{
+    //tendance stable
+    g_tendance_intensitelum=STABLE;
+  }
 }
 
 void recupVitesseVent(void){
