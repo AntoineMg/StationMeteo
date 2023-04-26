@@ -1,9 +1,15 @@
 #include <arduino.h>
+#include <TFT.h>  
+#include <SPI.h>
 
 //Definition des PINS
 #define PIN_TEMPERATURE 0x00 //A0 = PC0
 #define PIN_LUMINOSITE 0x01 //A1 = PC1
 #define PIN_INTENSITE_LUMINEUSE 0x02 // A2 = PC2
+#define PIN_SCREEN_CS 10
+#define PIN_SCREEN_DC 9
+#define PIN_SCREEN_RST 8
+
 
 //Definition des Masques
 #define MSQ_ADC 0x40 //Masque pour accéder au bit de start conversion de l'ADC

@@ -27,6 +27,11 @@ T_Tendance g_tendance_intensitelum;   //tendance de l'intensité lumineuse (Stab
 
 // Variables – Vent
 
+//Ecran
+// create an instance of the library
+TFT TFTscreen = TFT(PIN_SCREEN_CS, PIN_SCREEN_DC, PIN_SCREEN_RST);
+char temperature[8];
+
 
 void setup() {
   Serial.begin(9600);
@@ -39,6 +44,17 @@ void setup() {
 
   //initialisation de l'heure de depart du programme
   g_ui16_time_start=millis();
+
+  //Initialisation de l'écran
+  TFTscreen.begin();
+
+  //Reset de l'affichage
+  TFTscreen.background(0, 0, 0);
+
+  //Definition taille du texte sur 1
+  TFTscreen.setTextSize(2);
+  TFTscreen.stroke(255,0,0);
+
 }
 
 void loop() {
@@ -64,6 +80,11 @@ void loop() {
   Serial.println(g_tendance_temp);
   Serial.println("================================================");
 
+  TFTscreen.text("Temperature :", 0, 0);
+  String str_temp=String(g_float_temp);
+  str_temp.toCharArray(temperature, 8);
+  TFTscreen.text(temperature, 6, 57);
   delay(3000);
+  TFTscreen.background(0, 0, 0);
 
 }
