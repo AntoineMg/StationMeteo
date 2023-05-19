@@ -1,8 +1,7 @@
 #include "StationMeteo.h"
 
-//Ici on parle d'heure lorsque un temps est figé, et de temps pour une duree
-
 //Variables globales :
+T_Etat g_enum_Etat=TEMP;    //Etat par défaut = température
 uint16_t g_ui16_time_start=0;   //Heure de départ du programme
 
 // Variables – Température
@@ -30,6 +29,12 @@ float g_float_intensitelum_max=0;   //Intensité Lumineuse maximale depuis le d�
 T_Tendance g_tendance_intensitelum;   //tendance de l'intensité lumineuse (Stable / Hausse / Baisse)
 
 // Variables – Vent
+float g_float_vitesse_vent=0;    //Vitesse du vent actuelle
+float g_float_tab_vitesse_vent[5];  //5 dernières vitesses du vent
+float g_float_vitesse_vent_moy;   // moyenne de 5 vitesses du vent
+float g_float_vitesse_vent_min=9999999;  //Vitesse du vent minimale depuis le début
+float g_float_vitesse_vent_max=0;   //Vitesse du vent maximale depuis le début
+T_Tendance g_tendance_vitesse_vent;   //tendance de la vitesse du vent (Stable / Hausse / Baisse)
 
 //Ecran
 // create an instance of the library
@@ -64,6 +69,8 @@ void setup() {
 void loop() {
   
   //recuperation des valeurs
+  //nb : on ajoute un léger délai entre deux mesures utilisant le CAN, pour éviter les problèmes de fausse mesures qu'on a eu auparavant
+  //nb : on les mets dans le main afin de mieux visualiser le déroulement du programme et les délais
   recupTemperature();
   delay(20);
   recupLuminosite();
@@ -72,55 +79,95 @@ void loop() {
   delay(20);
   recupVitesseVent();
 
-
-  //Affichage des températures
-  Serial.println("Températures : ");
-  Serial.print("Actuelle : ");
-  Serial.println(g_float_temp);
-  Serial.print("Min : ");
-  Serial.println(g_float_temp_min);
-  Serial.print("Max : ");
-  Serial.println(g_float_temp_max);
-  Serial.print("Moy : ");
-  Serial.println(g_float_tempmoy);
-  Serial.print("Tendance : ");
-  Serial.println(g_tendance_temp);
-  Serial.println("================================================");
-
-  //Affichage des Luminosites
-  Serial.println("Luminosités : ");
-  Serial.print("Actuelle : ");
-  Serial.println(g_float_luminosite);
-  Serial.print("Min : ");
-  Serial.println(g_float_luminosite_min);
-  Serial.print("Max : ");
-  Serial.println(g_float_luminosite_max);
-  Serial.print("Moy : ");
-  Serial.println(g_float_luminositemoy);
-  Serial.print("Tendance : ");
-  Serial.println(g_tendance_luminosite);
-  Serial.println("================================================");
-
-
-   //Affichage des Intensités Lumineuses
-  Serial.println("Intensité lumineuses : ");
-  Serial.print("Actuelle : ");
-  Serial.println(g_float_intensitelum);
-  Serial.print("Min : ");
-  Serial.println(g_float_intensitelum_min);
-  Serial.print("Max : ");
-  Serial.println(g_float_intensitelum_max);
-  Serial.print("Moy : ");
-  Serial.println(g_float_intensitelum_moy);
-  Serial.print("Tendance : ");
-  Serial.println(g_tendance_intensitelum);
-  Serial.println("================================================");
-
+  //Essais du TFT
+  /*
   TFTscreen.text("Temperature :", 0, 0);
   String str_temp=String(g_float_temp);
   str_temp.toCharArray(temperature, 8);
   TFTscreen.text(temperature, 6, 57);
   delay(3000);
   TFTscreen.background(0, 0, 0);
+  */
+
+  //Lecture des Entrées
+  //Etat du bouton cablé sur PORT D1 = PD+
+  g_bool_BP = ((PIND & PIN_BP) == PIN_BP);
+
+  //MAJ de l'état
+    switch (g_enum_Etat){
+      case TEMP :
+        if(g_bool_BP == TRUE){
+            g_enum_Etat = ATT_LUMI;
+        }
+        break;
+      
+      case ATT_LUMI :
+        if(g_bool_BP == FALSE){
+            g_enum_Etat = LUMI;
+        }
+        break;
+
+      case LUMI :
+        if(g_bool_BP == TRUE){
+            g_enum_Etat = ATT_INTLUM;
+        }
+        break;
+      
+      case ATT_INTLUM :
+        if(g_bool_BP == FALSE){
+            g_enum_Etat = INTLUM;
+        }
+        break;
+      
+      case INTLUM :
+        if(g_bool_BP == TRUE){
+            g_enum_Etat = ATT_VENT;
+        }
+        break;
+      
+      case ATT_VENT :
+        if(g_bool_BP == FALSE){
+            g_enum_Etat = VENT;
+        }
+        break;
+      
+      case VENT :
+        if(g_bool_BP == TRUE){
+            g_enum_Etat = ATT_TEMP;
+        }
+        break;
+      
+      case ATT_TEMP :
+        if(g_bool_BP == FALSE){
+            g_enum_Etat = TEMP;
+        }
+        break;
+
+    }   //Fin du switch
+
+  //MAJ des Sorties en fonction de l'état
+
+    switch(g_enum_Etat){
+
+        case TEMP :
+          afficheTemp();
+          break;
+        
+        case LUMI :
+          afficheLuminosite();
+          break;
+        
+        case INTLUM :
+          afficheIntensiteLum();
+          break;
+        
+        case VENT :
+          afficheVitesseVent();
+          break;
+        
+    }
+
+
+
 
 }

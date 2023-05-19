@@ -8,31 +8,33 @@ extern uint16_t g_ui16_time_start;   //Heure de départ du programme
 extern float g_float_temp;   //Température actuelle
 extern float g_float_tab_temp[];   //5 dernières températures
 extern float g_float_tempmoy;    //moyenne de 5 températures 
-extern T_Tendance g_tendance_temp;   //tendance de la température (Stable / Hausse / Baisse)
 extern float g_float_temp_min;    //température minimale depuis le début
 extern float g_float_temp_max;    //température maximale depuis le début
+extern T_Tendance g_tendance_temp;   //tendance de la température (Stable / Hausse / Baisse)
 
 // Variables – Luminosité
 extern float g_float_luminosite;   //Luminosité actuelle
 extern float g_float_tab_luminosite[];    //5 dernières luminosités
-extern float g_float_luminositemoy;     //2 dernières moyennes de 5 luminosités cf. Annexe 1
-extern T_Tendance g_tendance_luminosite;    //tendance de la luminosité (Stable / Hausse / Baisse)
+extern float g_float_luminositemoy;     //moyenne des 5 dernières luminosités
 extern float g_float_luminosite_min;
 extern float g_float_luminosite_max;
+extern T_Tendance g_tendance_luminosite;    //tendance de la luminosité (Stable / Hausse / Baisse)
 
 // Variables – Intensité lumineuse
 extern float g_float_intensitelum;    //Intensité lumineuse actuelle
 extern float g_float_tab_intensitelum[];   //5 dernières intensités lumineuse
 extern float g_float_intensitelum_moy;    
-extern T_Tendance g_tendance_intensitelum;    //tendance des intensités lumineuses (Stable / Hausse / Baisse)
 extern float g_float_intensitelum_min;
 extern float g_float_intensitelum_max;
+extern T_Tendance g_tendance_intensitelum;    //tendance des intensités lumineuses (Stable / Hausse / Baisse)
 
 // Variables – Vent
 extern float g_float_vitesse_vent;    //Vitesse du vent actuelle
-extern float g_float_tab_vitesse_vent;   //5 dernières vitesses du vent
-extern float g_float_tab_vitesse_vent_moy;    //2 dernières moyennes de 5 vitesses du vent cf. Annexe 1
-extern T_Tendance g_tendance_vitesse_vent[];    //tendance des vitesses du vent (Stable / Hausse / Baisse)
+extern float g_float_tab_vitesse_vent[];   //5 dernières vitesses du vent
+extern float g_float_tab_vitesse_vent_moy;    //moyenne des 5 dernières vitesses du vent
+extern float g_float_vitesse_vent_min;
+extern float g_float_vitesse_vent_max;
+extern T_Tendance g_tendance_vitesse_vent;    //tendance des vitesses du vent (Stable / Hausse / Baisse)
 
 
 //Initialisation du CAN sur le portC X (doit être situé sur le port C)
@@ -57,8 +59,8 @@ uint16_t ConvAn(void) {
 }
 
 //Recupération de la température et stockage de celle ci dans la variable globale g_float_temp
-//Calcul de la moyenne des 5 dernières mesures et stockage de celle-ci dands le tableau g_float_tab_tempmoy[0]
-//Calcul de la tendance, en comparant les 2 dernières moyennes, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_temp
+//Calcul de la moyenne des 5 dernières mesures, actualisation des minimales et maximales
+//Calcul de la tendance, en comparant les 2 dernières mesures, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_temp
 void recupTemperature(void){
   uint16_t l_ui16_resultatConv;
   float l_float_sum = 0;
@@ -123,12 +125,12 @@ void recupTemperature(void){
 }
 
 //Récupération de la luminosité et stockage de celle-ci dans la variable globale g_float_lumi
-//Calcul de la moyenne des 5 dernières mesures et stockage de celle-ci dands le tableau g_float_tab_luminositemoy[0]
-//Calcul de la tendance, en comparant les 2 dernières moyennes, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_luminosite
+//Calcul de la moyenne des 5 dernières mesures, actualisation des minimales et maximales
+//Calcul de la tendance, en comparant les 2 dernières mesures, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_luminosite
 void recupLuminosite(void){
   uint16_t l_ui16_resultatConv;
   float l_float_sum = 0;
-  float l_float_delta=1;
+  float l_float_delta = 0;
 
   //initialisation du CAN sur le port A1
   InitCan(PIN_LUMINOSITE);
@@ -184,10 +186,12 @@ void recupLuminosite(void){
 }
 
 //Récupération de l'intensité lumineuse et stockage de celle-ci dans la variable globale g_float_intensitelum
+//Calcul de la moyenne des 5 dernières mesures, actualisation des minimales et maximales
+//Calcul de la tendance, en comparant les 2 dernières mesures, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_intensitelum
 void recupIntensiteLumineuse(void){
   uint16_t l_ui16_resultatConv;
   float l_float_sum = 0;
-  float l_float_=1;
+  float l_float_delta=0;
 
   //initialisation du CAN sur le port A1
   InitCan(PIN_INTENSITE_LUMINEUSE);
@@ -214,17 +218,19 @@ void recupIntensiteLumineuse(void){
 
   l_float_delta = g_float_tab_intensitelum[1]-g_float_tab_intensitelum[0];  //Calcul du delta entre les 2 mesures précédentes
 
-  //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
+  //Si le delta est inférieur à -0.1, alors la tendance est à la baisse
   if (l_float_delta>0.01){
     //tendance à la baisse
     g_tendance_intensitelum=BAISSE;
   }
 
+  //Si le delta est supérieur à 0.1, alors la tendance est à la hausse
   else if (l_float_delta<-0.01){
     //tendance à la hausse
     g_tendance_intensitelum=HAUSSE;
   }
 
+  //Sinon la tendance est stable
   else{
     //tendance stable
     g_tendance_intensitelum=STABLE;
@@ -241,24 +247,136 @@ void recupIntensiteLumineuse(void){
   }
 }
 
+//Récupération de la vitesse du vent et stockage de celle-ci dans la variable globale g_float_vitesse_vent
+//Calcul de la moyenne des 5 dernières mesures, actualisation des minimales et maximales
+//Calcul de la tendance, en comparant les 2 dernières mesures, stockage de celle si dans la variable de type enum T_Tendance, g_tendance_vitesse_vent
 void recupVitesseVent(void){
   uint16_t l_ui16_risingEdgeCounter = 0; //Init Variable compteur de fronts montants
   uint16_t l_ui16_temps = millis(); //heure
-  float l_float_vitesseVent;
 
   //Actualisation non-bloquante chaque seconde
   if(g_ui16_time_start+1000 <= l_ui16_temps) {
     //phase acquisition
     //l_ui16_temps = millis() - g_ui16_time_start;
     l_ui16_risingEdgeCounter = TCNT1;
-    l_float_vitesseVent = l_ui16_risingEdgeCounter*(0.16);
+    g_float_vitesse_vent = l_ui16_risingEdgeCounter*(0.16);
 
-    //renvoi des datas ( ICI CONVERTIR ENSUITE EN MPH )
-    Serial.println(l_float_vitesseVent);
+    //décalage des anciennes vitesses
+    g_float_tab_vitesse_vent[4]=g_float_tab_vitesse_vent[3];
+    g_float_tab_vitesse_vent[3]=g_float_tab_vitesse_vent[2];
+    g_float_tab_vitesse_vent[2]=g_float_tab_vitesse_vent[1];
+    g_float_tab_vitesse_vent[1]=g_float_tab_vitesse_vent[0];
+    g_float_tab_vitesse_vent[0]=g_float_tab_vitesse_vent;
+
+    //additionne les 5 dernières vitesses
+    for(int iBcl=0;iBcl<5;iBcl++){
+      l_float_sum += g_float_tab_vitesse_vent[iBcl];
+    }
+
+    g_float_vitesse_vent_moy = l_float_sum/5;   //stockage de la moyenne
+
+    l_float_delta = g_float_tab_vitesse_vent[1]-g_float_tab_vitesse_vent[0];  //Calcul du delta entre les 2 mesures précédentes
+
+    //Si le delta est inférieur à -0.1, alors la tendance est à la baisse
+    if (l_float_delta>0.01){
+      //tendance à la baisse
+      g_tendance_vitesse_vent=BAISSE;
+    }
+
+    //Si le delta est supérieur à 0.1, alors la tendance est à la hausse
+    else if (l_float_delta<-0.01){
+      //tendance à la hausse
+      g_tendance_vitesse_vent=HAUSSE;
+    }
+
+    //Sinon la tendance est stable
+    else{
+      //tendance stable
+      g_tendance_vitesse_vent=STABLE;
+    }
+
+    //actualisation de la vitesse minimale si elle est dépassée
+    if (g_float_vitesse_vent<g_float_vitesse_vent_min){
+      g_float_vitesse_vent_min = g_float_vitesse_vent;
+    }
+
+    //actualisation de la vitesse maximale si elle est dépassée
+    if (g_float_vitesse_vent>g_float_vitesse_vent_max){
+      g_float_vitesse_vent_max = g_float_vitesse_vent;
+    }
 
     //phase reset
     TCNT1=0;
     g_ui16_time_start = l_ui16_temps; //le temps de depart est desormais le temps auquel cette mesure a ete effectuee
 
   }
+
+}
+
+//Affichage des Températures (Actuelle, Moyenne, Minimale, Maximale et Tendance) dans le moniteur série
+void afficheTemperature(void){
+    //Affichage des températures
+    Serial.println("Températures : ");
+    Serial.print("Actuelle : ");
+    Serial.println(g_float_temp);
+    Serial.print("Min : ");
+    Serial.println(g_float_temp_min);
+    Serial.print("Max : ");
+    Serial.println(g_float_temp_max);
+    Serial.print("Moy : ");
+    Serial.println(g_float_tempmoy);
+    Serial.print("Tendance : ");
+    Serial.println(g_tendance_temp);
+    Serial.println("================================================");
+}
+
+//Affichage des Luminosités (Actuelle, Moyenne, Minimale, Maximale et Tendance) dans le moniteur série
+void afficheLuminosite(void){
+    //Affichage des Luminosites
+    Serial.println("Luminosités : ");
+    Serial.print("Actuelle : ");
+    Serial.println(g_float_luminosite);
+    Serial.print("Min : ");
+    Serial.println(g_float_luminosite_min);
+    Serial.print("Max : ");
+    Serial.println(g_float_luminosite_max);
+    Serial.print("Moy : ");
+    Serial.println(g_float_luminositemoy);
+    Serial.print("Tendance : ");
+    Serial.println(g_tendance_luminosite);
+    Serial.println("================================================");  
+}
+
+//Affichage des Intensités lumineuses (Actuelle, Moyenne, Minimale, Maximale et Tendance) dans le moniteur série
+void afficheIntensiteLumineuse(void){
+   //Affichage des Intensités Lumineuses
+    Serial.println("Intensité lumineuses : ");
+    Serial.print("Actuelle : ");
+    Serial.println(g_float_intensitelum);
+    Serial.print("Min : ");
+    Serial.println(g_float_intensitelum_min);
+    Serial.print("Max : ");
+    Serial.println(g_float_intensitelum_max);
+    Serial.print("Moy : ");
+    Serial.println(g_float_intensitelum_moy);
+    Serial.print("Tendance : ");
+    Serial.println(g_tendance_intensitelum);
+    Serial.println("================================================");
+}
+
+//Affichage des Vitesses du vent (Actuelle, Moyenne, Minimale, Maximale et Tendance) dans le moniteur série
+void afficheVitesseVent(void){
+   //Affichage des Vitesses du vent
+    Serial.println("Vitesses du Vent : ");
+    Serial.print("Actuelle : ");
+    Serial.println(g_float_vitesse_vent);
+    Serial.print("Min : ");
+    Serial.println(g_float_vitesse_vent_min);
+    Serial.print("Max : ");
+    Serial.println(g_float_vitesse_vent_max);
+    Serial.print("Moy : ");
+    Serial.println(g_float_vitesse_vent_moy);
+    Serial.print("Tendance : ");
+    Serial.println(g_tendance_vitesse_vent);
+    Serial.println("================================================");
 }
