@@ -17,12 +17,16 @@ extern float g_float_luminosite;   //Luminosité actuelle
 extern float g_float_tab_luminosite[];    //5 dernières luminosités
 extern float g_float_luminositemoy;     //2 dernières moyennes de 5 luminosités cf. Annexe 1
 extern T_Tendance g_tendance_luminosite;    //tendance de la luminosité (Stable / Hausse / Baisse)
+extern float g_float_luminosite_min;
+extern float g_float_luminosite_max;
 
 // Variables – Intensité lumineuse
 extern float g_float_intensitelum;    //Intensité lumineuse actuelle
 extern float g_float_tab_intensitelum[];   //5 dernières intensités lumineuse
-extern float g_float_tab_intensitelummoy[];    //2 dernières moyennes de 5 intensités lumineuses cf. Annexe 1
+extern float g_float_intensitelum_moy;    
 extern T_Tendance g_tendance_intensitelum;    //tendance des intensités lumineuses (Stable / Hausse / Baisse)
+extern float g_float_intensitelum_min;
+extern float g_float_intensitelum_max;
 
 // Variables – Vent
 extern float g_float_vitesse_vent;    //Vitesse du vent actuelle
@@ -167,13 +171,23 @@ void recupLuminosite(void){
     g_tendance_luminosite=STABLE;
   }
 
+  //actualisation de la luminosité minimale si elle est dépassée
+  if (g_float_luminosite<g_float_luminosite_min){
+    g_float_luminosite_min = g_float_luminosite;
+  }
+
+  //actualisation de la luminosité maximale si elle est dépassée
+  if (g_float_luminosite>g_float_luminosite_max){
+    g_float_luminosite_max = g_float_luminosite;
+  }
+
 }
 
 //Récupération de l'intensité lumineuse et stockage de celle-ci dans la variable globale g_float_intensitelum
 void recupIntensiteLumineuse(void){
   uint16_t l_ui16_resultatConv;
   float l_float_sum = 0;
-  float l_float_ratio=1;
+  float l_float_=1;
 
   //initialisation du CAN sur le port A1
   InitCan(PIN_INTENSITE_LUMINEUSE);
@@ -196,18 +210,17 @@ void recupIntensiteLumineuse(void){
     l_float_sum += g_float_tab_intensitelum[iBcl];
   }
 
-  g_float_tab_intensitelummoy[1] = g_float_tab_intensitelummoy[0];   //décalge de la moyenne précédente
-  g_float_tab_intensitelummoy[0] = l_float_sum/5;   //stockage de la moyenne
+  g_float_intensitelum_moy = l_float_sum/5;   //stockage de la moyenne
 
-  l_float_ratio = g_float_tab_intensitelummoy[1]/g_float_tab_intensitelummoy[0];  //Calcul du rapport entre les 2 moyennes précédentes
+  l_float_delta = g_float_tab_intensitelum[1]-g_float_tab_intensitelum[0];  //Calcul du delta entre les 2 mesures précédentes
 
   //Si le ratio est aux alentours de 1, alors tendance stable, si ratio supérieur, alors tendance à la baisse, si ratio inférieur, alors tendance à la hausse
-  if (l_float_ratio>1.01){
+  if (l_float_delta>0.01){
     //tendance à la baisse
     g_tendance_intensitelum=BAISSE;
   }
 
-  else if (l_float_ratio<0.99){
+  else if (l_float_delta<-0.01){
     //tendance à la hausse
     g_tendance_intensitelum=HAUSSE;
   }
@@ -215,6 +228,16 @@ void recupIntensiteLumineuse(void){
   else{
     //tendance stable
     g_tendance_intensitelum=STABLE;
+  }
+
+  //actualisation de l'intensite lumineuse minimale si elle est dépassée
+  if (g_float_intensitelum<g_float_intensitelum_min){
+    g_float_intensitelum_min = g_float_intensitelum;
+  }
+
+  //actualisation de l'intensite lumineuse maximale si elle est dépassée
+  if (g_float_intensitelum>g_float_intensitelum_max){
+    g_float_intensitelum_max = g_float_intensitelum;
   }
 }
 

@@ -16,13 +16,17 @@ T_Tendance g_tendance_temp;   //tendance de la température (Stable / Hausse / B
 // Variables – Luminosité
 float g_float_luminosite=0;   //Luminosité actuelle
 float g_float_tab_luminosite[5];  //5 dernières luminosités
-float g_float_luminositemoy;   //2 dernières moyennes de 5 luminosités cf. Annexe 1
+float g_float_luminositemoy;   // moyenne de 5 luminosités 
+float g_float_luminosite_min=999;   //Luminosité minimale depuis le début
+float g_float_luminosite_max=0;   //Luminosité maximale depuis le début
 T_Tendance g_tendance_luminosite;   //tendance de la luminosité (Stable / Hausse / Baisse)
 
 // Variables – Intensité lumineuse
 float g_float_intensitelum=0;    //Intensité lumineuse actuelle
 float g_float_tab_intensitelum[5];  //5 dernières intensités lumineuses
-float g_float_tab_intensitelummoy[2];   //2 dernières moyennes de 5 intensités lumineuses cf. Annexe 1
+float g_float_intensitelum_moy;   // moyenne de 5 intensités lumineuses
+float g_float_intensitelum_min=9999999;  //Intensité lumineuse minimale depuis le début
+float g_float_intensitelum_max=0;   //Intensité Lumineuse maximale depuis le début
 T_Tendance g_tendance_intensitelum;   //tendance de l'intensité lumineuse (Stable / Hausse / Baisse)
 
 // Variables – Vent
@@ -61,9 +65,12 @@ void loop() {
   
   //recuperation des valeurs
   recupTemperature();
-  //recupLuminosite();
-  //recupIntensiteLumineuse();
-  //recupVitesseVent();
+  delay(20);
+  recupLuminosite();
+  delay(20);
+  recupIntensiteLumineuse();
+  delay(20);
+  recupVitesseVent();
 
 
   //Affichage des températures
@@ -78,6 +85,35 @@ void loop() {
   Serial.println(g_float_tempmoy);
   Serial.print("Tendance : ");
   Serial.println(g_tendance_temp);
+  Serial.println("================================================");
+
+  //Affichage des Luminosites
+  Serial.println("Luminosités : ");
+  Serial.print("Actuelle : ");
+  Serial.println(g_float_luminosite);
+  Serial.print("Min : ");
+  Serial.println(g_float_luminosite_min);
+  Serial.print("Max : ");
+  Serial.println(g_float_luminosite_max);
+  Serial.print("Moy : ");
+  Serial.println(g_float_luminositemoy);
+  Serial.print("Tendance : ");
+  Serial.println(g_tendance_luminosite);
+  Serial.println("================================================");
+
+
+   //Affichage des Intensités Lumineuses
+  Serial.println("Intensité lumineuses : ");
+  Serial.print("Actuelle : ");
+  Serial.println(g_float_intensitelum);
+  Serial.print("Min : ");
+  Serial.println(g_float_intensitelum_min);
+  Serial.print("Max : ");
+  Serial.println(g_float_intensitelum_max);
+  Serial.print("Moy : ");
+  Serial.println(g_float_intensitelum_moy);
+  Serial.print("Tendance : ");
+  Serial.println(g_tendance_intensitelum);
   Serial.println("================================================");
 
   TFTscreen.text("Temperature :", 0, 0);
