@@ -20,6 +20,9 @@ typedef enum{STABLE, HAUSSE, BAISSE} T_Tendance;
 //type indiquant l'état actuel du système
 typedef enum{TEMP, ATT_LUMI, LUMI, ATT_INTLUM, INTLUM, ATT_VENT, VENT, ATT_TEMP} T_Etat;
 
+//Ecran
+// create an instance of the library
+//TFT TFTscreen = TFT(PIN_SCREEN_CS, PIN_SCREEN_DC, PIN_SCREEN_RST);
 
 void InitCan(uint8_t x_ui8_portConv);
 uint16_t ConvAn(void);

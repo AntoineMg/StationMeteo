@@ -3,6 +3,8 @@
 
 //Variables globales :
 extern uint16_t g_ui16_time_start;   //Heure de départ du programme
+extern TFT TFTscreen;
+extern char temperature;
 
 // Variables – Température
 extern float g_float_temp;   //Température actuelle
@@ -31,7 +33,7 @@ extern T_Tendance g_tendance_intensitelum;    //tendance des intensités lumineu
 // Variables – Vent
 extern float g_float_vitesse_vent;    //Vitesse du vent actuelle
 extern float g_float_tab_vitesse_vent[];   //5 dernières vitesses du vent
-extern float g_float_tab_vitesse_vent_moy;    //moyenne des 5 dernières vitesses du vent
+extern float g_float_vitesse_vent_moy;    //moyenne des 5 dernières vitesses du vent
 extern float g_float_vitesse_vent_min;
 extern float g_float_vitesse_vent_max;
 extern T_Tendance g_tendance_vitesse_vent;    //tendance des vitesses du vent (Stable / Hausse / Baisse)
@@ -253,6 +255,8 @@ void recupIntensiteLumineuse(void){
 void recupVitesseVent(void){
   uint16_t l_ui16_risingEdgeCounter = 0; //Init Variable compteur de fronts montants
   uint16_t l_ui16_temps = millis(); //heure
+  float l_float_sum;
+  float l_float_delta;
 
   //Actualisation non-bloquante chaque seconde
   if(g_ui16_time_start+1000 <= l_ui16_temps) {
@@ -266,7 +270,7 @@ void recupVitesseVent(void){
     g_float_tab_vitesse_vent[3]=g_float_tab_vitesse_vent[2];
     g_float_tab_vitesse_vent[2]=g_float_tab_vitesse_vent[1];
     g_float_tab_vitesse_vent[1]=g_float_tab_vitesse_vent[0];
-    g_float_tab_vitesse_vent[0]=g_float_tab_vitesse_vent;
+    g_float_tab_vitesse_vent[0]=g_float_vitesse_vent;
 
     //additionne les 5 dernières vitesses
     for(int iBcl=0;iBcl<5;iBcl++){
@@ -328,6 +332,14 @@ void afficheTemperature(void){
     Serial.print("Tendance : ");
     Serial.println(g_tendance_temp);
     Serial.println("================================================");
+
+    TFTscreen.background(0, 0, 0);
+    TFTscreen.text("Temperature :", 0, 0);
+    //delay(500);
+    //String str_temp=String(g_float_temp);
+    //str_temp.toCharArray(temperature, 8);
+    //TFTscreen.text(temperature, 6, 57);
+    
 }
 
 //Affichage des Luminosités (Actuelle, Moyenne, Minimale, Maximale et Tendance) dans le moniteur série

@@ -3,6 +3,7 @@
 //Variables globales :
 T_Etat g_enum_Etat=TEMP;    //Etat par défaut = température
 uint16_t g_ui16_time_start=0;   //Heure de départ du programme
+bool g_bool_BP;
 
 // Variables – Température
 float g_float_temp=0;   //Température actuelle
@@ -45,10 +46,11 @@ char temperature[8];
 void setup() {
   Serial.begin(9600);
   DDRC = 0x00; //B0000 0000 =>Tous les ports C sont des inputs
+  DDRD = 0x03;
 
   //Registres pour la mesure de fréquence
   TCCR1A=0x00; 
-  TCCR1B=0x07;  //Congig afin de compter les fronts montants sur la tension externe
+  TCCR1B=0x07;  //Config afin de compter les fronts montants sur la tension externe
   TCCR1C=0x00;
 
   //initialisation de l'heure de depart du programme
@@ -96,49 +98,49 @@ void loop() {
   //MAJ de l'état
     switch (g_enum_Etat){
       case TEMP :
-        if(g_bool_BP == TRUE){
+        if(g_bool_BP == true){
             g_enum_Etat = ATT_LUMI;
         }
         break;
       
       case ATT_LUMI :
-        if(g_bool_BP == FALSE){
+        if(g_bool_BP == false){
             g_enum_Etat = LUMI;
         }
         break;
 
       case LUMI :
-        if(g_bool_BP == TRUE){
+        if(g_bool_BP == true){
             g_enum_Etat = ATT_INTLUM;
         }
         break;
       
       case ATT_INTLUM :
-        if(g_bool_BP == FALSE){
+        if(g_bool_BP == false){
             g_enum_Etat = INTLUM;
         }
         break;
       
       case INTLUM :
-        if(g_bool_BP == TRUE){
+        if(g_bool_BP == true){
             g_enum_Etat = ATT_VENT;
         }
         break;
       
       case ATT_VENT :
-        if(g_bool_BP == FALSE){
+        if(g_bool_BP == false){
             g_enum_Etat = VENT;
         }
         break;
       
       case VENT :
-        if(g_bool_BP == TRUE){
+        if(g_bool_BP == true){
             g_enum_Etat = ATT_TEMP;
         }
         break;
       
       case ATT_TEMP :
-        if(g_bool_BP == FALSE){
+        if(g_bool_BP == false){
             g_enum_Etat = TEMP;
         }
         break;
@@ -150,7 +152,7 @@ void loop() {
     switch(g_enum_Etat){
 
         case TEMP :
-          afficheTemp();
+          afficheTemperature();
           break;
         
         case LUMI :
@@ -158,7 +160,7 @@ void loop() {
           break;
         
         case INTLUM :
-          afficheIntensiteLum();
+          afficheIntensiteLumineuse();
           break;
         
         case VENT :
@@ -167,7 +169,7 @@ void loop() {
         
     }
 
-
+  Serial.println(g_bool_BP);
 
 
 }
