@@ -40,10 +40,30 @@ T_Tendance g_tendance_vitesse_vent;   //tendance de la vitesse du vent (Stable /
 //Ecran
 // create an instance of the library
 TFT TFTscreen = TFT(PIN_SCREEN_CS, PIN_SCREEN_DC, PIN_SCREEN_RST);
+//char temperatures
 char temp_actu[8];
 char temp_min[8];
 char temp_max[8];
 char temp_moy[8];
+
+//char luminosites
+char lumi_actu[8];
+char lumi_min[8];
+char lumi_max[8];
+char lumi_moy[8];
+
+//char intensites lumineuse
+char intlum_actu[8];
+char intlum_min[8];
+char intlum_max[8];
+char intlum_moy[8];
+
+//char vent
+char vent_actu[8];
+char vent_min[8];
+char vent_max[8];
+char vent_moy[8];
+
 
 
 void setup() {

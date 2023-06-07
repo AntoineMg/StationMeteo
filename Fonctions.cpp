@@ -4,10 +4,30 @@
 //Variables globales :
 extern uint16_t g_ui16_time_start;   //Heure de départ du programme
 extern TFT TFTscreen;
+
+//char temperatures
 extern char temp_actu[];
 extern char temp_min[];
 extern char temp_max[];
 extern char temp_moy[];
+
+//char luminosites
+extern char lumi_actu[];
+extern char lumi_min[];
+extern char lumi_max[];
+extern char lumi_moy[];
+
+//char intensites lumineuses
+extern char intlum_actu[];
+extern char intlum_min[];
+extern char intlum_max[];
+extern char intlum_moy[];
+
+//char vent
+extern char vent_actu[];
+extern char vent_min[];
+extern char vent_max[];
+extern char vent_moy[];
 
 // Variables – Température
 extern float g_float_temp;   //Température actuelle
@@ -361,11 +381,11 @@ void afficheTemperature(void){
     TFTscreen.stroke(255,255,255);
     TFTscreen.text("Max :", 0, LINE_GAP*3);
     TFTscreen.stroke(255,0,255);
-    TFTscreen.text("temp_max", 80, LINE_GAP*3);
+    TFTscreen.text(temp_max, 80, LINE_GAP*3);
     TFTscreen.stroke(255,255,255);
     TFTscreen.text("Moy :", 0, LINE_GAP*4);
     TFTscreen.stroke(255,0,255);
-    TFTscreen.text("temp_moy", 80, LINE_GAP*4);
+    TFTscreen.text(temp_moy, 80, LINE_GAP*4);
     TFTscreen.stroke(255,255,255);
     TFTscreen.text("Tendance :", 0, LINE_GAP*5);
     TFTscreen.stroke(255,0,255);
@@ -388,7 +408,43 @@ void afficheLuminosite(void){
     Serial.println(g_float_luminositemoy);
     Serial.print("Tendance : ");
     Serial.println(g_tendance_luminosite);
-    Serial.println("================================================");  
+    Serial.println("================================================");
+
+
+    String str_lumi_actu=String(g_float_luminosite);
+    String str_lumi_min=String(g_float_luminosite_min);
+    String str_lumi_max=String(g_float_luminosite_max);
+    String str_lumi_moy=String(g_float_luminositemoy);
+    str_lumi_actu.toCharArray(lumi_actu, 8);
+    str_lumi_min.toCharArray(lumi_min, 8);
+    str_lumi_max.toCharArray(lumi_max, 8);
+    str_lumi_max.toCharArray(lumi_moy, 8);
+
+    TFTscreen.setTextSize(2);
+    TFTscreen.stroke(128,0,128);
+    TFTscreen.background(0, 0, 0);
+    TFTscreen.text("Luminosites :", 0, 0);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Actu :", 0, LINE_GAP);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(lumi_actu, 80, LINE_GAP);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Min :", 0, LINE_GAP*2);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(lumi_min, 80, LINE_GAP*2);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Max :", 0, LINE_GAP*3);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(lumi_max, 80, LINE_GAP*3);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Moy :", 0, LINE_GAP*4);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(lumi_moy, 80, LINE_GAP*4);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Tendance :", 0, LINE_GAP*5);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text("UP", 128, LINE_GAP*5);
+    delay(50);
 }
 
 //Affichage des Intensités lumineuses (Actuelle, Moyenne, Minimale, Maximale et Tendance) dans le moniteur série
@@ -406,6 +462,41 @@ void afficheIntensiteLumineuse(void){
     Serial.print("Tendance : ");
     Serial.println(g_tendance_intensitelum);
     Serial.println("================================================");
+
+    String str_intlum_actu=String(g_float_intensitelum);
+    String str_intlum_min=String(g_float_intensitelum_min);
+    String str_intlum_max=String(g_float_intensitelum_max);
+    String str_intlum_moy=String(g_float_intensitelum_moy);
+    str_intlum_actu.toCharArray(intlum_actu, 8);
+    str_intlum_min.toCharArray(intlum_min, 8);
+    str_intlum_max.toCharArray(intlum_max, 8);
+    str_intlum_max.toCharArray(intlum_moy, 8);
+
+    TFTscreen.setTextSize(2);
+    TFTscreen.stroke(128,0,128);
+    TFTscreen.background(0, 0, 0);
+    TFTscreen.text("Intensites Lum :", 0, 0);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Actu :", 0, LINE_GAP);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(intlum_actu, 80, LINE_GAP);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Min :", 0, LINE_GAP*2);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(intlum_min, 80, LINE_GAP*2);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Max :", 0, LINE_GAP*3);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(intlum_max, 80, LINE_GAP*3);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Moy :", 0, LINE_GAP*4);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(intlum_moy, 80, LINE_GAP*4);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Tendance :", 0, LINE_GAP*5);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text("UP", 128, LINE_GAP*5);
+    delay(50);
 }
 
 //Affichage des Vitesses du vent (Actuelle, Moyenne, Minimale, Maximale et Tendance) dans le moniteur série
