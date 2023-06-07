@@ -1,7 +1,7 @@
 #include "StationMeteo.h"
 
 //Variables globales :
-T_Etat g_enum_Etat=TEMP;    //Etat par défaut = température
+T_Etat g_enum_Etat=0;    //Etat par défaut = température
 uint16_t g_ui16_time_start=0;   //Heure de départ du programme
 bool g_bool_BP;
 
@@ -40,13 +40,16 @@ T_Tendance g_tendance_vitesse_vent;   //tendance de la vitesse du vent (Stable /
 //Ecran
 // create an instance of the library
 TFT TFTscreen = TFT(PIN_SCREEN_CS, PIN_SCREEN_DC, PIN_SCREEN_RST);
-char temperature[8];
+char temp_actu[8];
+char temp_min[8];
+char temp_max[8];
 
 
 void setup() {
   Serial.begin(9600);
   DDRC = 0x00; //B0000 0000 =>Tous les ports C sont des inputs
-  DDRD = 0x03;
+  DDRD = 0x00;
+  
 
   //Registres pour la mesure de fréquence
   TCCR1A=0x00; 
@@ -94,7 +97,7 @@ void loop() {
   //Lecture des Entrées
   //Etat du bouton cablé sur PORT D1 = PD+
   g_bool_BP = ((PIND & PIN_BP) == PIN_BP);
-
+  /*
   //MAJ de l'état
     switch (g_enum_Etat){
       case TEMP :
@@ -147,6 +150,7 @@ void loop() {
 
     }   //Fin du switch
 
+    delay(100);
   //MAJ des Sorties en fonction de l'état
 
     switch(g_enum_Etat){
@@ -168,8 +172,10 @@ void loop() {
           break;
         
     }
-
+  */
   Serial.println(g_bool_BP);
+  afficheTemperature();
+  delay(500);
 
 
 }

@@ -4,7 +4,9 @@
 //Variables globales :
 extern uint16_t g_ui16_time_start;   //Heure de départ du programme
 extern TFT TFTscreen;
-extern char temperature;
+extern char temp_actu[];
+extern char temp_min[];
+extern char temp_max[];
 
 // Variables – Température
 extern float g_float_temp;   //Température actuelle
@@ -333,12 +335,39 @@ void afficheTemperature(void){
     Serial.println(g_tendance_temp);
     Serial.println("================================================");
 
+    
+    String str_temp_actu=String(g_float_temp);
+    String str_temp_min=String(g_float_temp_min);
+    String str_temp_max=String(g_float_temp_max);
+    str_temp_actu.toCharArray(temp_actu, 8);
+    str_temp_min.toCharArray(temp_min, 8);
+    str_temp_max.toCharArray(temp_max, 8);
+    
+    TFTscreen.setTextSize(2);
+    TFTscreen.stroke(128,0,128);
     TFTscreen.background(0, 0, 0);
-    TFTscreen.text("Temperature :", 0, 0);
-    //delay(500);
-    //String str_temp=String(g_float_temp);
-    //str_temp.toCharArray(temperature, 8);
-    //TFTscreen.text(temperature, 6, 57);
+    TFTscreen.text("Temperatures :", 0, 0);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Actu :", 0, LINE_GAP);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(temp_actu, 80, LINE_GAP);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Min :", 0, LINE_GAP*2);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text(temp_min, 80, LINE_GAP*2);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Max :", 0, LINE_GAP*3);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text("temp_max", 80, LINE_GAP*3);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Moy :", 0, LINE_GAP*4);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text("temp_moy", 80, LINE_GAP*4);
+    TFTscreen.stroke(255,255,255);
+    TFTscreen.text("Tendance :", 0, LINE_GAP*5);
+    TFTscreen.stroke(255,0,255);
+    TFTscreen.text("UP", 128, LINE_GAP*5);
+    delay(50);
     
 }
 

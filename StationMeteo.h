@@ -9,7 +9,9 @@
 #define PIN_SCREEN_CS 10
 #define PIN_SCREEN_DC 9
 #define PIN_SCREEN_RST 8
-#define PIN_BP 0x01 //D1 = PD1
+#define PIN_BP 0x04 //D2 = PD2
+#define LINE_GAP 20
+
 
 //Definition des Masques
 #define MSQ_ADC 0x40 //Masque pour accéder au bit de start conversion de l'ADC
