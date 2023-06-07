@@ -43,6 +43,7 @@ TFT TFTscreen = TFT(PIN_SCREEN_CS, PIN_SCREEN_DC, PIN_SCREEN_RST);
 char temp_actu[8];
 char temp_min[8];
 char temp_max[8];
+char temp_moy[8];
 
 
 void setup() {
@@ -97,60 +98,59 @@ void loop() {
   //Lecture des Entrées
   //Etat du bouton cablé sur PORT D1 = PD+
   g_bool_BP = ((PIND & PIN_BP) == PIN_BP);
-  /*
+  
   //MAJ de l'état
     switch (g_enum_Etat){
       case TEMP :
-        if(g_bool_BP == true){
+        if(g_bool_BP == false){
             g_enum_Etat = ATT_LUMI;
         }
         break;
       
       case ATT_LUMI :
-        if(g_bool_BP == false){
+        if(g_bool_BP == true){
             g_enum_Etat = LUMI;
         }
         break;
 
       case LUMI :
-        if(g_bool_BP == true){
+        if(g_bool_BP == false){
             g_enum_Etat = ATT_INTLUM;
         }
         break;
       
       case ATT_INTLUM :
-        if(g_bool_BP == false){
+        if(g_bool_BP == true){
             g_enum_Etat = INTLUM;
         }
         break;
       
       case INTLUM :
-        if(g_bool_BP == true){
+        if(g_bool_BP == false){
             g_enum_Etat = ATT_VENT;
         }
         break;
       
       case ATT_VENT :
-        if(g_bool_BP == false){
+        if(g_bool_BP == true){
             g_enum_Etat = VENT;
         }
         break;
       
       case VENT :
-        if(g_bool_BP == true){
+        if(g_bool_BP == false){
             g_enum_Etat = ATT_TEMP;
         }
         break;
       
       case ATT_TEMP :
-        if(g_bool_BP == false){
+        if(g_bool_BP == true){
             g_enum_Etat = TEMP;
         }
         break;
 
     }   //Fin du switch
 
-    delay(100);
   //MAJ des Sorties en fonction de l'état
 
     switch(g_enum_Etat){
@@ -172,10 +172,8 @@ void loop() {
           break;
         
     }
-  */
-  Serial.println(g_bool_BP);
-  afficheTemperature();
-  delay(500);
+  
+  //Serial.println(g_bool_BP);
 
 
 }

@@ -7,6 +7,7 @@ extern TFT TFTscreen;
 extern char temp_actu[];
 extern char temp_min[];
 extern char temp_max[];
+extern char temp_moy[];
 
 // Variables – Température
 extern float g_float_temp;   //Température actuelle
@@ -339,9 +340,11 @@ void afficheTemperature(void){
     String str_temp_actu=String(g_float_temp);
     String str_temp_min=String(g_float_temp_min);
     String str_temp_max=String(g_float_temp_max);
+    String str_temp_moy=String(g_float_tempmoy);
     str_temp_actu.toCharArray(temp_actu, 8);
     str_temp_min.toCharArray(temp_min, 8);
     str_temp_max.toCharArray(temp_max, 8);
+    str_temp_max.toCharArray(temp_moy, 8);
     
     TFTscreen.setTextSize(2);
     TFTscreen.stroke(128,0,128);
