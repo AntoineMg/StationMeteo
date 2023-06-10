@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-06-10T15:33:10.399Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="a-kmnq-N8psESL5JoLjJ" version="20.8.13" type="github">
+<mxfile host="app.diagrams.net" modified="2023-06-10T15:35:54.960Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="FEZWoJ5Ddp2zMVlOz5PB" version="20.8.13" type="github">
   <diagram name="Page-1" id="qZHYLV_8x-l-EKf5Vn4w">
-    <mxGraphModel dx="1908" dy="1098" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1590" dy="915" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -52,7 +52,7 @@
             <mxPoint x="520" y="440" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="dPifkgQ7XjB3MJ5y5AkH-12" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="dPifkgQ7XjB3MJ5y5AkH-12" value="ATMEGA 328" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="520" y="40" width="120" height="440" as="geometry" />
         </mxCell>
         <mxCell id="dPifkgQ7XjB3MJ5y5AkH-13" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1">
@@ -71,6 +71,24 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="480" y="319.71" as="sourcePoint" />
             <mxPoint x="520" y="320.21" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dPifkgQ7XjB3MJ5y5AkH-16" value="Ecran OLED&lt;br&gt;TFT" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="200" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="dPifkgQ7XjB3MJ5y5AkH-17" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="dPifkgQ7XjB3MJ5y5AkH-12" target="dPifkgQ7XjB3MJ5y5AkH-16">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="670" y="290" as="sourcePoint" />
+            <mxPoint x="720" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dPifkgQ7XjB3MJ5y5AkH-18" value="Bouton de Changement de Mode" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="560" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dPifkgQ7XjB3MJ5y5AkH-19" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=4;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="dPifkgQ7XjB3MJ5y5AkH-18" target="dPifkgQ7XjB3MJ5y5AkH-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="540" y="490" as="sourcePoint" />
+            <mxPoint x="630" y="530" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
