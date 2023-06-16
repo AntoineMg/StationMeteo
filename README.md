@@ -1,5 +1,6 @@
 # StationMeteo
 Projet de Station météo basée sur un arduino uno
+Source : https://github.com/AntoineMg/StationMeteo
 
 ## Cahier des Charges
 ### Version 1
@@ -13,35 +14,34 @@ Projet de Station météo basée sur un arduino uno
 * Capteur d'intensité lumineuse
     * Cellule photovoltaïque random
         - [X] Retourne une valeur
-        - [ ] Valeur cohérente
-        - [ ] Calcul de la moyenne des 5 dernières mesures
-        - [ ] Calcul de la tendance
+        - [X] Valeur cohérente
+        - [X] Calcul de la moyenne des 5 dernières mesures
+        - [X] Calcul de la tendance
   
 * Capteur de luminosité
     * Photorésistance
         - [X] Retourne une valeur
-        - [ ] Valeur cohérente
-        - [ ] Calcul de la moyenne des 5 dernières mesures
-        - [ ] Calcul de la tendance
+        - [X] Valeur cohérente
+        - [X] Calcul de la moyenne des 5 dernières mesures
+        - [X] Calcul de la tendance
 
 * Anémomètre
     * Simulé par un GBF
         - [X] Retourne une valeur
         - [X] Valeur cohérente avec celle simulée par le GBF
-        - [ ] Calcul de la moyenne des 5 dernières mesures
-        - [ ] Calcul de la tendance
+        - [X] Calcul de la moyenne des 5 dernières mesures
+        - [X] Calcul de la tendance
 
 * Général
-    - [ ] Affichage des infos avec la moyenne et la tendance
-    - [ ] Mesures toutes les 3 secondes
+    - [X] Affichage des infos avec la moyenne et la tendance
+    - [X] Mesures toutes les 3 secondes
  
-## Tâches à effectuer :
+## Améliorations à faire:
 
-- [ ] trouver la bonne formule pour convertir la luminosité
-- [ ] Rendre toutes les fonctions non bloquantes
-- [ ] Integrer moyennes et tendances, sur les 3autres fx
+- [ ] Affichage tendance sur OLED
+- [ ] Ameliorer conversions maths
 
-## Fonctions :
+## Quelques Fonctions :
 
 ### void InitCan(uint8_t x_ui8_portConv)
     Permets d'initialiser le CAN en vue d'une conversion sur le port x_ui8_portConv
